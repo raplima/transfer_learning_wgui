@@ -272,6 +272,10 @@ def train_top_model(bottleneck_name, model_name, arch, img_height, img_width, ep
     validation_data = np.load(open(bottleneck_dir + bottleneck_name + '_val.npy', 'rb'))
     validation_labels = np.load(open(bottleneck_dir + bottleneck_name + '_val_labels.npy', 'rb')).reshape(-1)
 
+    # check to see if runs/model path exists
+    if not os.path.exists(model_dir):
+        os.makedirs(model_dir)
+
     top_model = Sequential()
     top_model.add(Flatten(input_shape=train_data.shape[1:]))
     #top_model.add(Dense(512, activation='relu'))
@@ -316,10 +320,6 @@ def train_top_model(bottleneck_name, model_name, arch, img_height, img_width, ep
         model.compile(optimizer=SGD(lr=0.0001, momentum=0.9),
                       loss='sparse_categorical_crossentropy',
                       metrics=['accuracy'])
-
-    # check to see if runs/model path exists
-    if not os.path.exists(model_dir):
-        os.makedirs(model_dir)
 
     model.save(model_dir + model_name + '.hdf5')
     # also save the dictionary label associated with this file for later testing

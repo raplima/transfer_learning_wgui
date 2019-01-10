@@ -237,7 +237,7 @@ class CNN_GUI(tk.Tk):
         filemenu = tk.Menu(menubar, tearoff=0)
         filemenu.add_command(label='Save settings', command=lambda: popupmsg('Not supported just yet'))
         filemenu.add_separator()
-        filemenu.add_command(label='Exit', command=quit)
+        filemenu.add_command(label='Exit', command=lambda: quit)
         menubar.add_cascade(label='File', menu=filemenu)
 
         quick_train = tk.Menu(menubar, tearoff=1)
@@ -288,7 +288,7 @@ class StartPage(tk.Frame):
         button3 = ttk.Button(self, text="Test Model", width=18, command=lambda: controller.show_frame(PageTest))
         button3.pack()
 
-        button4 = ttk.Button(self, text="Close", width=18, command=quit)
+        button4 = ttk.Button(self, text="Close", width=18, command=lambda: quit)
         button4.pack()
 
 class PageSplit(tk.Frame):
