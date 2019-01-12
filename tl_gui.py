@@ -337,7 +337,7 @@ class PageSplit(tk.Frame):
 
         def folder_select():
             global input_folder
-            input_folder = tk.filedialog.askdirectory(initialdir=os.path.dirname(os.getcwd()),
+            input_folder = tk.filedialog.askdirectory(initialdir=os.getcwd(),
                                                     title='Select data folder')
             print('\nData folder: ' + input_folder + '\n')
 
@@ -464,13 +464,13 @@ class PageTrain(tk.Frame):
 
         def folder_train_select():
             global train_folder
-            train_folder = tk.filedialog.askdirectory(initialdir=os.path.dirname(os.getcwd()),
+            train_folder = tk.filedialog.askdirectory(initialdir=os.getcwd(),
                                                     title='Select training data folder')
             print('\nTraining data folder: ' + train_folder)
 
         def folder_valid_select():
             global valid_folder
-            valid_folder = tk.filedialog.askdirectory(initialdir=os.path.dirname(os.getcwd()),
+            valid_folder = tk.filedialog.askdirectory(initialdir=os.getcwd(),
                                                     title='Select validation data folder')
             print('\nValidation data folder: ' + valid_folder)
 
@@ -552,7 +552,7 @@ class PageTest(tk.Frame):
             global new_model
             global new_model_labels
 
-            single_im = tk.filedialog.askopenfilename(initialdir=os.path.dirname(os.getcwd()),
+            single_im = tk.filedialog.askopenfilename(initialdir=os.getcwd(),
                                                       title='Select image to be classified ')
             print('\nImage selected: ' + single_im)
 
@@ -570,7 +570,7 @@ class PageTest(tk.Frame):
 
         def folder_select():
             global folder_im
-            folder_im = tk.filedialog.askdirectory(initialdir=os.path.dirname(os.getcwd()),
+            folder_im = tk.filedialog.askdirectory(initialdir=os.getcwd(),
                                                       title='Select model to be used ')
             print('\nFolder to be classified: ' + folder_im)
 
