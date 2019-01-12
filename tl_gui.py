@@ -1,5 +1,5 @@
 # Rafael Pires de Lima
-# December 2018
+# January 2019
 # GUI
 
 #impor the processing script:
@@ -116,14 +116,13 @@ def popupmultigraph(df, path, model_labels, i=0):
         ax[0].axis("off")
 
         ax[1].set_xlabel("Probability")
-        ax[1].set_ylabel("Class")
 
         fig.set_size_inches(w=14, h=6)
 
         graph = FigureCanvasTkAgg(fig, master=root)
         graph.get_tk_widget().pack(side="top", fill='both', expand=True)
 
-        # will need this later:
+        # get the class position for later plotting:
         x_pos = [elem for elem, _ in enumerate(model_labels)]
 
         def get_values(pos):
@@ -147,16 +146,20 @@ def popupmultigraph(df, path, model_labels, i=0):
 
             # read image for plotting:
             img = mpimg.imread(img_p)
-            ax[0].set_title(img_p)
             ax[0].axis("off")
+            ax[0].set_title(df.iloc[[row]].values[0][-1])
             ax[0].imshow(img)
 
             ax[1].barh(x_pos, data[0][:], color='grey')
-            ax[1].set_xlabel("Probability")
-            ax[1].set_ylabel("Class")
+            ax[1].set_xlabel("Probability", fontsize=16)
+            ax[1].tick_params(labelsize=14)
             ax[1].set_xlim(0.0, 1.0)
+            ax[1].yaxis.grid(False)
             ax[1].set_yticks(x_pos)
-            ax[1].set_yticklabels(model_labels)
+            ax[1].set_yticklabels('')
+
+            for y, lab in enumerate(model_labels):
+                ax[1].text(0, y, lab.replace('_',' '), verticalalignment='center', fontsize=18)
 
             graph.draw()
 
