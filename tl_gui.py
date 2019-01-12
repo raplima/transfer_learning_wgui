@@ -186,34 +186,33 @@ def make_fig(res, model_labels, im):
         Returns:
             fig: a matplotlib figure.
     """
-    # for plotting:
-    x_pos = [i for i, _ in enumerate(model_labels)]
+
+    # set up figure
+    fig, ax = plt.subplots(nrows=1, ncols=2, constrained_layout=True)
+    ax[0].axis("off")
+
+    ax[1].set_xlabel("Probability")
+
+    fig.set_size_inches(w=14, h=6)
+
+    # get the class position for later plotting:
+    x_pos = [elem for elem, _ in enumerate(model_labels)]
 
     # read image for plotting:
     img = mpimg.imread(im)
+    ax[0].axis("off")
+    ax[0].imshow(img)
 
-    # plot image and probabilities:
-    fig = plt.figure()
-    # set up subplot grid
-    gs1 = gridspec.GridSpec(4, 1)
+    ax[1].barh(x_pos, res[0][:], color='grey')
+    ax[1].set_xlabel("Probability", fontsize=16)
+    ax[1].tick_params(labelsize=14)
+    ax[1].set_xlim(0.0, 1.0)
+    ax[1].yaxis.grid(False)
+    ax[1].set_yticks(x_pos)
+    ax[1].set_yticklabels('')
 
-    # plot the image:
-    plt.subplot2grid((1, 4), (0, 0), rowspan=1, colspan=2)
-    plt.axis("off")
-    plt.imshow(img)
-
-    plt.subplot2grid((1, 4), (0, 2), rowspan=1, colspan=2)
-    plt.barh(x_pos, res[0][:], color='grey')
-    plt.ylabel("Class")
-
-    plt.xlabel("Probability")
-    # plt.title("Probability assigned by class")
-    plt.xlim(0.0, 1.0)
-    plt.yticks(x_pos, model_labels)
-
-    fig.tight_layout()
-    fig.subplots_adjust(hspace=0.0, wspace=0.0)
-    fig.set_size_inches(w=14, h=6)
+    for y, lab in enumerate(model_labels):
+        ax[1].text(0, y, lab.replace('_', ' '), verticalalignment='center', fontsize=18)
 
     return fig
 
