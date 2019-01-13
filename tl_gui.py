@@ -239,7 +239,6 @@ class CNN_GUI(tk.Tk):
         filemenu = tk.Menu(menubar, tearoff=0)
         filemenu.add_command(label='Save settings', command=lambda: popupmsg('Not supported just yet'))
         filemenu.add_separator()
-        filemenu.add_command(label='Exit', command=lambda: quit)
         menubar.add_cascade(label='File', menu=filemenu)
 
         quick_train = tk.Menu(menubar, tearoff=1)
@@ -289,9 +288,6 @@ class StartPage(tk.Frame):
 
         button3 = ttk.Button(self, text="Test Model", width=18, command=lambda: controller.show_frame(PageTest))
         button3.pack()
-
-        button4 = ttk.Button(self, text="Close", width=18, command=lambda: quit)
-        button4.pack()
 
 class PageSplit(tk.Frame):
     global validation_per
@@ -409,12 +405,16 @@ class PageTrain(tk.Frame):
             'NASNetLarge': (331, 331, 3)
         }
 
-        ms.set('Xception')  # initialize
+        #ms.set('Xception')  # initialize
 
-        for text in options:
-            self.b = tk.Radiobutton(self, text=text, variable=ms, width=but_width, indicatoron=0, borderwidth=3,
-                                    value=text, command=lambda: update_arch()).pack()
+        #for text in options:
+        #    self.b = tk.Radiobutton(self, text=text, variable=ms, width=but_width, indicatoron=0, borderwidth=3,
+        #                            value=text, command=lambda: update_arch()).pack()
 
+        ms.set(options[0])
+        self.b = tk.OptionMenu(*(self, ms) + tuple(options))
+        self.b.config(width=but_width)
+        self.b.pack(side=tk.TOP, pady=2, padx=10)
 
         label4 = tk.Label(self, text='Enter bottlenecks\' name:')
         label4.pack(side=tk.TOP, pady=2, padx=10)
@@ -473,10 +473,6 @@ class PageTrain(tk.Frame):
             valid_folder = tk.filedialog.askdirectory(initialdir=os.getcwd(),
                                                     title='Select validation data folder')
             print('\nValidation data folder: ' + valid_folder)
-
-        def update_arch():
-            arch = ms.get()
-            print("Selected: " + arch + '. The default input size for this model is ' + str(options_dict[arch]))
 
         def update_opt():
             opt = var_opt.get()
@@ -562,9 +558,9 @@ class PageTest(tk.Frame):
 
             # print the results:
             res = tl.label_one(single_im, new_model)
-
+            print('{:50} {:}'.format('Class', 'Probability'))
             for i in range(len(model_labels)):
-                print(model_labels[i], res[0][i])
+                print('{:50} {:.4f}'.format(model_labels[i], res[0][i]))
 
             popupgraph(make_fig(res, model_labels, single_im))
 
@@ -601,5 +597,5 @@ class PageTest(tk.Frame):
 Execution of graphical interface:
 """
 app = CNN_GUI()
-app.geometry('720x800')
+app.geometry('540x600')
 app.mainloop()
