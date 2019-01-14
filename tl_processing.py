@@ -1,6 +1,7 @@
 # Rafael Pires de Lima
-# December 2018
-# GUI
+# January 2019
+# Transfer Learning application
+# This file includes routines to split the data, create bottlenecks, train a new model, predict with new model
 
 import os
 import pickle

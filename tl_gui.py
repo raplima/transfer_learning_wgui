@@ -1,6 +1,6 @@
 # Rafael Pires de Lima
 # January 2019
-# GUI
+# Tkinter based GUI for _processing.py script
 
 #impor the processing script:
 import tl_processing as tl
