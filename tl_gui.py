@@ -2,7 +2,7 @@
 # January 2019
 # Tkinter based GUI for _processing.py script
 
-#impor the processing script:
+#import the processing script:
 import tl_processing as tl
 
 import os
@@ -599,3 +599,4 @@ Execution of graphical interface:
 app = CNN_GUI()
 app.geometry('540x600')
 app.mainloop()
+
