@@ -74,10 +74,11 @@ class MainFrame(wx.Frame):
 
         gbSizer.Add(self.m_staticText_valper, wx.GBPosition(1, 0), wx.GBSpan(1, 1), wx.ALL, 5)
 
-        m_comboBox2Choices = [u"1", u"5", u"10", u"20", u"30"]
-        self.m_comboBox2 = wx.ComboBox(self.m_panel1, wx.ID_ANY, u"10", wx.DefaultPosition, wx.DefaultSize,
-                                       m_comboBox2Choices, 0)
-        gbSizer.Add(self.m_comboBox2, wx.GBPosition(1, 1), wx.GBSpan(1, 1), wx.ALL | wx.ALIGN_CENTER_HORIZONTAL, 5)
+        m_comboBox_vper = [u"1", u"5", u"10", u"20", u"30"]
+        self.m_comboBox_vper = wx.ComboBox(self.m_panel1, wx.ID_ANY, u"10", wx.DefaultPosition, wx.DefaultSize,
+                                       m_comboBox_vper, 0)
+        self.m_comboBox_vper.SetToolTip(u"The percentage of data to be reserved as validation data.")
+        gbSizer.Add(self.m_comboBox_vper, wx.GBPosition(1, 1), wx.GBSpan(1, 1), wx.ALL | wx.ALIGN_CENTER_HORIZONTAL, 5)
 
         self.m_staticText_testper = wx.StaticText(self.m_panel1, wx.ID_ANY, u"Select test percentage:",
                                                   wx.DefaultPosition, wx.DefaultSize, 0)
@@ -85,11 +86,12 @@ class MainFrame(wx.Frame):
 
         gbSizer.Add(self.m_staticText_testper, wx.GBPosition(2, 0), wx.GBSpan(1, 1), wx.ALL, 5)
 
-        m_comboBox21Choices = [u"0", u"1", u"5", u"10", u"20", u"30", u"40", u"50", u"60", u"70", u"80", u"90", u"95"]
-        self.m_comboBox21 = wx.ComboBox(self.m_panel1, wx.ID_ANY, u"10", wx.DefaultPosition, wx.DefaultSize,
-                                        m_comboBox21Choices, 0)
-        self.m_comboBox21.SetSelection(3)
-        gbSizer.Add(self.m_comboBox21, wx.GBPosition(2, 1), wx.GBSpan(1, 1), wx.ALL | wx.ALIGN_CENTER_HORIZONTAL, 5)
+        m_comboBox_tper = [u"0", u"1", u"5", u"10", u"20", u"30", u"40", u"50", u"60", u"70", u"80", u"90", u"95"]
+        self.m_comboBox_tper = wx.ComboBox(self.m_panel1, wx.ID_ANY, u"10", wx.DefaultPosition, wx.DefaultSize,
+                                        m_comboBox_tper, 0)
+        self.m_comboBox_tper.SetToolTip(u"The percentage of data to be reserved as test data.")
+        self.m_comboBox_tper.SetSelection(3)
+        gbSizer.Add(self.m_comboBox_tper, wx.GBPosition(2, 1), wx.GBSpan(1, 1), wx.ALL | wx.ALIGN_CENTER_HORIZONTAL, 5)
 
         self.m_staticText_split = wx.StaticText(self.m_panel1, wx.ID_ANY, u"Split data:", wx.DefaultPosition,
                                                 wx.DefaultSize, 0)
@@ -97,11 +99,11 @@ class MainFrame(wx.Frame):
 
         gbSizer.Add(self.m_staticText_split, wx.GBPosition(3, 0), wx.GBSpan(1, 1), wx.ALL, 5)
 
-        self.m_button_runTL1 = wx.Button(self.m_panel1, wx.ID_ANY, u"Run", wx.DefaultPosition, wx.DefaultSize, 0)
-        self.m_button_runTL1.SetToolTip(
+        self.m_button_runSD = wx.Button(self.m_panel1, wx.ID_ANY, u"Run", wx.DefaultPosition, wx.DefaultSize, 0)
+        self.m_button_runSD.SetToolTip(
             u"Press this button after selecting the options above. \nThe program will then use split the data into training, validation, and test sets. ")
 
-        gbSizer.Add(self.m_button_runTL1, wx.GBPosition(3, 1), wx.GBSpan(1, 1),
+        gbSizer.Add(self.m_button_runSD, wx.GBPosition(3, 1), wx.GBSpan(1, 1),
                     wx.ALL | wx.ALIGN_CENTER_HORIZONTAL | wx.EXPAND, 5)
 
         self.m_panel1.SetSizer(gbSizer)
@@ -159,7 +161,7 @@ class MainFrame(wx.Frame):
         gbSizer1.Add(self.m_staticText_cnnModel, wx.GBPosition(2, 0), wx.GBSpan(1, 1), wx.ALL, 5)
 
         m_choice_ModelChoices = [u"Xception", u"VGG16", u"VGG19", u"ResNet50", u"NASNetLarge", u"DenseNet121",
-                                 u"MobileNetV2", u"MobileNet", u"InceptionResNetV2", u"InceptionV3"]
+                                 u"MobileNet", u"MobileNetV2", u"InceptionResNetV2", u"InceptionV3"]
         self.m_choice_Model = wx.Choice(self.m_panel2, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize,
                                         m_choice_ModelChoices, 0)
         self.m_choice_Model.SetSelection(0)
@@ -200,7 +202,7 @@ class MainFrame(wx.Frame):
                                            wx.LI_HORIZONTAL)
         gbSizer1.Add(self.m_staticline1, wx.GBPosition(5, 0), wx.GBSpan(1, 2), wx.EXPAND | wx.ALL, 5)
 
-        self.m_staticText_mName = wx.StaticText(self.m_panel2, wx.ID_ANY, u"Create bottlenecks", wx.DefaultPosition,
+        self.m_staticText_mName = wx.StaticText(self.m_panel2, wx.ID_ANY, u"Model name", wx.DefaultPosition,
                                                 wx.DefaultSize, 0)
         self.m_staticText_mName.Wrap(-1)
 
@@ -350,17 +352,17 @@ class MainFrame(wx.Frame):
         self.Centre(wx.BOTH)
 
         # Connect Events
-        self.m_button_runTL1.Bind(wx.EVT_BUTTON, lambda: self.split_data(folder, val, test))
-        self.m_button_runBot.Bind(wx.EVT_BUTTON, lambda: self.create_bneck(train_f, val_f, cnn_basel))
-        self.m_button_runTL.Bind(wx.EVT_BUTTON, lambda: self.run_transfer_learning(bneck, cnn_basel, n_epochs))
-        self.m_filePicker_image.Bind(wx.EVT_FILEPICKER_CHANGED, lambda: self.label_one(model, image))
-        self.m_button_runBLabel.Bind(wx.EVT_BUTTON, lambda: self.label_folder(model, folder))
+        self.m_button_runSD.Bind(wx.EVT_BUTTON, self.split_data)
+        self.m_button_runBot.Bind(wx.EVT_BUTTON, self.create_bneck)
+        self.m_button_runTL.Bind(wx.EVT_BUTTON, self.run_transfer_learning)
+        self.m_filePicker_image.Bind(wx.EVT_FILEPICKER_CHANGED, self.label_one)
+        self.m_button_runBLabel.Bind(wx.EVT_BUTTON, self.label_folder)
 
     def __del__(self):
         pass
 
-    # Virtual event handlers, overide them in your derived class
-    def split_data(self, event):  # (folder,val,test)
+    # functions
+    def split_data(self, event): # (folder,val,test)
         event.Skip()
 
     def create_bneck(self, event):  # (train_f,val_f,cnn_basel)
@@ -450,8 +452,8 @@ class pop_up_fig(wx.Dialog):
     def move_next(self, event):
         event.Skip()
 
-
-app = wx.App()
-window = MainFrame(None)
-window.Show(True)
-app.MainLoop()
+if __name__ == '__main__':
+    app = wx.App()
+    window = MainFrame(None)
+    window.Show(True)
+    app.MainLoop()
