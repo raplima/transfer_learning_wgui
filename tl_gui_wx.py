@@ -14,6 +14,11 @@ import wx
 import wx.xrc
 import os
 
+from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
+from matplotlib.backends.backend_wx import NavigationToolbar2Wx
+from matplotlib.figure import Figure
+
+
 # path variables:
 path_input = os.getcwd()
 
@@ -383,19 +388,31 @@ class MainFrame(wx.Frame):
 ###########################################################################
 
 class pop_up_msg(wx.Dialog):
-
     def __init__(self, parent):
+        self.msg = ''
+
         wx.Dialog.__init__(self, parent, id=wx.ID_ANY, title=wx.EmptyString, pos=wx.DefaultPosition,
                            size=wx.DefaultSize, style=wx.DEFAULT_DIALOG_STYLE)
+
+    def __del__(self):
+        pass
+
+    def set_msg(self, msg):
+        self.msg = msg
 
         self.SetSizeHints(wx.DefaultSize, wx.DefaultSize)
 
         bSizer = wx.BoxSizer(wx.VERTICAL)
 
-        self.m_staticText = wx.StaticText(self, wx.ID_ANY, u"MyLabel", wx.DefaultPosition, wx.DefaultSize, 0)
+        self.m_staticText = wx.StaticText(self, wx.ID_ANY, self.msg, wx.DefaultPosition, wx.DefaultSize, 0)
         self.m_staticText.Wrap(-1)
 
+        self.m_staticText.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOW))
+
         bSizer.Add(self.m_staticText, 0, wx.ALL | wx.EXPAND, 5)
+
+        self.m_button = wx.Button(self, wx.ID_ANY, u"Ok", wx.DefaultPosition, wx.DefaultSize, 0)
+        bSizer.Add(self.m_button, 0, wx.ALL, 5)
 
         self.SetSizer(bSizer)
         self.Layout()
@@ -403,8 +420,12 @@ class pop_up_msg(wx.Dialog):
 
         self.Centre(wx.BOTH)
 
-    def __del__(self):
-        pass
+        # Connect Events
+        self.m_button.Bind(wx.EVT_BUTTON, self.ok_click)
+
+    # Virtual event handlers, override them in your derived class
+    def ok_click(self, event):
+        self.Destroy()
 
 
 ###########################################################################
@@ -417,33 +438,38 @@ class pop_up_fig(wx.Dialog):
         wx.Dialog.__init__(self, parent, id=wx.ID_ANY, title=wx.EmptyString, pos=wx.DefaultPosition,
                            size=wx.DefaultSize, style=wx.DEFAULT_DIALOG_STYLE)
 
+    def __del__(self):
+        pass
+
+    def update_graph(self, fig, ctrls=False):
         self.SetSizeHints(wx.DefaultSize, wx.DefaultSize)
 
-        gbSizer3 = wx.GridBagSizer(0, 0)
-        gbSizer3.SetFlexibleDirection(wx.BOTH)
-        gbSizer3.SetNonFlexibleGrowMode(wx.FLEX_GROWMODE_SPECIFIED)
+        self.gbSizer3 = wx.GridBagSizer(0, 0)
+        self.gbSizer3.SetFlexibleDirection(wx.BOTH)
+        self.gbSizer3.SetNonFlexibleGrowMode(wx.FLEX_GROWMODE_SPECIFIED)
 
-        self.m_panel = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL)
-        gbSizer3.Add(self.m_panel, wx.GBPosition(0, 0), wx.GBSpan(1, 2), wx.ALL | wx.EXPAND, 5)
+        self.figure = fig
+        self.canvas = FigureCanvas(self, -1, self.figure)
+        self.gbSizer3.Add(self.canvas, wx.GBPosition(0, 0), wx.GBSpan(1, 2), wx.ALL | wx.EXPAND, 5)
 
-        self.m_button_previous = wx.Button(self, wx.ID_ANY, u"Previous", wx.DefaultPosition, wx.DefaultSize, 0)
-        gbSizer3.Add(self.m_button_previous, wx.GBPosition(1, 0), wx.GBSpan(1, 1), wx.ALL, 5)
 
-        self.m_button_next = wx.Button(self, wx.ID_ANY, u"Next", wx.DefaultPosition, wx.DefaultSize, 0)
-        gbSizer3.Add(self.m_button_next, wx.GBPosition(1, 1), wx.GBSpan(1, 1), wx.ALL, 5)
+        if ctrls:
+            self.m_button_previous = wx.Button(self, wx.ID_ANY, u"Previous", wx.DefaultPosition, wx.DefaultSize, 0)
+            self.gbSizer3.Add(self.m_button_previous, wx.GBPosition(1, 0), wx.GBSpan(1, 1), wx.ALL, 5)
 
-        self.SetSizer(gbSizer3)
+            self.m_button_next = wx.Button(self, wx.ID_ANY, u"Next", wx.DefaultPosition, wx.DefaultSize, 0)
+            self.gbSizer3.Add(self.m_button_next, wx.GBPosition(1, 1), wx.GBSpan(1, 1), wx.ALL, 5)
+
+        self.SetSizer(self.gbSizer3)
         self.Layout()
-        gbSizer3.Fit(self)
+        self.gbSizer3.Fit(self)
 
         self.Centre(wx.BOTH)
 
-        # Connect Events
-        self.m_button_previous.Bind(wx.EVT_BUTTON, self.move_previous)
-        self.m_button_next.Bind(wx.EVT_BUTTON, self.move_next)
-
-    def __del__(self):
-        pass
+        if ctrls:
+            # Connect Events
+            self.m_button_previous.Bind(wx.EVT_BUTTON, self.move_previous)
+            self.m_button_next.Bind(wx.EVT_BUTTON, self.move_next)
 
     # Virtual event handlers, overide them in your derived class
     def move_previous(self, event):
@@ -457,3 +483,37 @@ if __name__ == '__main__':
     window = MainFrame(None)
     window.Show(True)
     app.MainLoop()
+
+    print('Main window done')
+
+    app2 = wx.App()
+    window = pop_up_msg(None)
+    window.Show(True)
+    window.set_msg('Test message')
+    app2.MainLoop()
+
+    print('Dialog (message) window done')
+
+    # Creates just a figure and only one subplot
+
+    import matplotlib
+
+    matplotlib.use('WXAgg')
+
+    from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
+    from matplotlib.backends.backend_wx import NavigationToolbar2Wx
+    from matplotlib.figure import Figure
+    from matplotlib import pyplot as plt
+
+    fig, ax = plt.subplots()
+    ax.plot([1,2,3,4,5], [1,2,3,4,5])
+    ax.set_title('Simple test image')
+
+    app3 = wx.App()
+    window = pop_up_fig(None)
+    window.update_graph(fig)
+    window.Show(True)
+    app3.MainLoop()
+
+    print('Figure window done')
+
