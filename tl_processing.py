@@ -41,6 +41,48 @@ batch_size = 16
 bottleneck_dir = os.getcwd() + os.sep + 'runs' + os.sep + 'bnecks' + os.sep
 model_dir = os.getcwd() + os.sep + 'runs' + os.sep + 'models' + os.sep
 
+"""
+Result function:
+"""
+def make_fig(res, model_labels, im):
+    """Makes a matplotlib figure with image and classification results.
+        Args:
+            res: np.array with shape (1, number of labels) containing the results of the classification
+                performed by a CNN model.
+            im: String path to a single image (the image that generated res)
+            model_labels: A python list with the real name of the classes
+        Returns:
+            fig: a matplotlib figure.
+    """
+
+    # set up figure
+    fig, ax = plt.subplots(nrows=1, ncols=2, constrained_layout=True)
+    ax[0].axis("off")
+
+    ax[1].set_xlabel("Probability")
+
+    fig.set_size_inches(w=14, h=6)
+
+    # get the class position for later plotting:
+    x_pos = [elem for elem, _ in enumerate(model_labels)]
+
+    # read image for plotting:
+    img = mpimg.imread(im)
+    ax[0].axis("off")
+    ax[0].imshow(img)
+
+    ax[1].barh(x_pos, res[0][:], color='grey')
+    ax[1].set_xlabel("Probability", fontsize=16)
+    ax[1].tick_params(labelsize=14)
+    ax[1].set_xlim(0.0, 1.0)
+    ax[1].yaxis.grid(False)
+    ax[1].set_yticks(x_pos)
+    ax[1].set_yticklabels('')
+
+    for y, lab in enumerate(model_labels):
+        ax[1].text(0, y, lab.replace('_', ' '), verticalalignment='center', fontsize=18)
+
+    return fig
 
 """
 "Processing" functions:
@@ -118,18 +160,18 @@ def train_val_test(path, val_p=0.1, test_p=0.1):
     folders = [item for item in lst if "." not in item]
 
     # create folder to save training/validation/test data:
-    path_train = os.path.dirname(path) + '/' + path.split("/")[-1] + '_train'
+    path_train = os.path.dirname(path) + os.sep + path.split(os.sep)[-1] + '_train'
     if os.path.exists(path_train):
         shutil.rmtree(path_train, ignore_errors=True)
     os.makedirs(path_train)
 
-    path_valid = os.path.dirname(path) + '/' + path.split("/")[-1] + '_validation'
+    path_valid = os.path.dirname(path) + os.sep + path.split(os.sep)[-1] + '_validation'
     if os.path.exists(path_valid):
         shutil.rmtree(path_valid, ignore_errors=True)
     os.makedirs(path_valid)
 
     if test_p > 0:
-        path_test = os.path.dirname(path) + '/' + path.split("/")[-1] + '_test'
+        path_test = os.path.dirname(path) + os.sep + path.split(os.sep)[-1] + '_test'
         if os.path.exists(path_test):
             shutil.rmtree(path_test, ignore_errors=True)
         os.makedirs(path_test)
@@ -139,25 +181,25 @@ def train_val_test(path, val_p=0.1, test_p=0.1):
         print("Current folder: " + this_folder)
 
         # create folder to save cropped image:
-        if os.path.exists(path_train + '/' + this_folder):
-            shutil.rmtree(path_train + '/' + this_folder, ignore_errors=True)
-        os.makedirs(path_train + '/' + this_folder)
+        if os.path.exists(path_train + os.sep + this_folder):
+            shutil.rmtree(path_train + os.sep + this_folder, ignore_errors=True)
+        os.makedirs(path_train + os.sep + this_folder)
 
-        if os.path.exists(path_valid + '/' + this_folder):
-            shutil.rmtree(path_valid + '/' + this_folder, ignore_errors=True)
-        os.makedirs(path_valid + '/' + this_folder)
+        if os.path.exists(path_valid + os.sep + this_folder):
+            shutil.rmtree(path_valid + os.sep + this_folder, ignore_errors=True)
+        os.makedirs(path_valid + os.sep + this_folder)
 
         if test_p > 0:
-            if os.path.exists(path_test + '/' + this_folder):
-                shutil.rmtree(path_test + '/' + this_folder, ignore_errors=True)
-            os.makedirs(path_test + '/' + this_folder)
+            if os.path.exists(path_test + os.sep + this_folder):
+                shutil.rmtree(path_test + os.sep + this_folder, ignore_errors=True)
+            os.makedirs(path_test + os.sep + this_folder)
 
         # get pictures in this folder:
-        lst = os.listdir(path + "/" + this_folder)
+        lst = os.listdir(path + os.sep + this_folder)
 
         # separate training and test data:
         # get pictures in this folder:
-        lst = os.listdir(path + "/" + this_folder)
+        lst = os.listdir(path + os.sep + this_folder)
 
         if (len(lst) < 3):
             print("      Not enough data for automatic separation")
@@ -177,14 +219,14 @@ def train_val_test(path, val_p=0.1, test_p=0.1):
 
             # copy all pictures to appropriate folder
             for t in range(0, n_test):
-                shutil.copy2(path + '/' + this_folder + '/' + lst[t], path_test + '/' + this_folder)
+                shutil.copy2(path + os.sep + this_folder + os.sep + lst[t], path_test + os.sep + this_folder)
 
             for t in range(n_test, n_test + n_valid):
-                shutil.copy2(path + '/' + this_folder + '/' + lst[t], path_valid + '/' + this_folder)
+                shutil.copy2(path + os.sep + this_folder + os.sep + lst[t], path_valid + os.sep + this_folder)
                 # print("copied " + lst[t] + " to validation folder");
 
             for t in range(n_test + n_valid, len(lst)):
-                shutil.copy2(path + '/' + this_folder + '/' + lst[t], path_train + '/' + this_folder)
+                shutil.copy2(path + os.sep + this_folder + os.sep + lst[t], path_train + os.sep + this_folder)
                 # print("copied " + lst[t] + " to train folder");
 
 
@@ -203,7 +245,7 @@ def save_bottleneck_features(train_data_dir, validation_data_dir, bottleneck_nam
     # Saves the bottlenecks of validation and train data.
     # Input is path to train_data_dir and validation_data_dir (directories with the images)
     # bottleneck_name is the name to be used for saving
-    # bottlenck_dir is defined outside of this function
+    # bottleneck_dir is defined outside of this function
     # arch is the architecture to be used
     global bottleneck_dir
     datagen = ImageDataGenerator(rescale=1. / 255)
@@ -350,6 +392,10 @@ def train_top_model(bottleneck_name, model_name, arch, img_height, img_width, ep
     # set up figure
     fig.set_size_inches(w=5, h=7)
 
+    # return the image to calling function:
+    return fig
+
+    '''    
     # put the figure in a tkinter window:
     # initialize the window
     root = tk.Tk()
@@ -365,6 +411,7 @@ def train_top_model(bottleneck_name, model_name, arch, img_height, img_width, ep
 
     graph._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
     root.mainloop()
+    '''
 
 
 def label_one(path_img, path_model):
