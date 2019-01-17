@@ -392,6 +392,8 @@ def train_top_model(bottleneck_name, model_name, arch, img_height, img_width, ep
     # set up figure
     fig.set_size_inches(w=5, h=7)
 
+    plt.show(fig)
+
     # return the image to calling function:
     return fig
 
