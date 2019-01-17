@@ -394,9 +394,6 @@ def train_top_model(bottleneck_name, model_name, arch, img_height, img_width, ep
 
     plt.show(fig)
 
-    # return the image to calling function:
-    return fig
-
     '''    
     # put the figure in a tkinter window:
     # initialize the window

@@ -494,8 +494,9 @@ class PageTrain(tk.Frame):
             epochs = var_epochs.get()
             opt = var_opt.get()
 
-            this_fig = tl.train_top_model(bn_name, model_name, arch, options_dict[arch][0], options_dict[arch][1], epochs, opt)
+            tl.train_top_model(bn_name, model_name, arch, options_dict[arch][0], options_dict[arch][1], epochs, opt)
 
+            '''
             # put the figure in a tkinter window:
             # initialize the window
             root = tk.Tk()
@@ -511,6 +512,7 @@ class PageTrain(tk.Frame):
 
             graph._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
             root.mainloop()
+            '''
 
             popupmsg('Transfer learning complete.' +
                      '\nModel  saved in ' + str(model_dir) + ' as ' + str(model_name) + '.')
