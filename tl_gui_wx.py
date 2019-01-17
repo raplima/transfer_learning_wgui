@@ -232,6 +232,7 @@ class MainFrame(wx.Frame):
         self.m_comboBox_nEpochs = wx.ComboBox(self.m_panel2, wx.ID_ANY, u"10", wx.DefaultPosition, wx.DefaultSize,
                                               m_comboBox_nEpochsChoices, 0)
         self.m_comboBox_nEpochs.SetSelection(3)
+        self.m_comboBox_nEpochs.SetToolTip(u"The number of complete iterations to be performed.")
         gbSizer1.Add(self.m_comboBox_nEpochs, wx.GBPosition(7, 1), wx.GBSpan(1, 1), wx.ALL | wx.EXPAND, 5)
 
         self.m_staticText_wOpt = wx.StaticText(self.m_panel2, wx.ID_ANY, u"Choose one optimizer:", wx.DefaultPosition,
