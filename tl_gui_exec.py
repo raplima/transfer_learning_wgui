@@ -32,38 +32,6 @@ model_dir = os.getcwd() + os.sep + 'runs' + os.sep + 'models' + os.sep
 
 
 ###########################################################################
-# Function Pop up message
-###########################################################################
-def popup(msg):
-    """Pops up a wx window with a message
-      Args:
-        msg: String, the message to be displayed.
-      Returns:
-        No returns. Opens a wx window with a message.
-    """
-    pop_app = wx.App()
-    window = tl_gui_wx.pop_up_msg(None)
-    window.Show(True)
-    window.set_msg(msg)
-    pop_app.MainLoop()
-    print('popup message closed')
-
-def popimg(fig, ctrls=False):
-    """Pops up a wx window with a figure
-      Args:
-        fig: A matplotlib figure.
-      Returns:
-        No returns. Opens a wx window with the provided figure.
-    """
-    app3 = wx.App()
-    window = tl_gui_wx.pop_up_fig(None)
-    window.update_graph(fig)
-    window.Show(True)
-    app3.MainLoop()
-    print('popup image closed')
-
-
-###########################################################################
 # Main window
 ###########################################################################
 class Exec(tl_gui_wx.MainFrame):
@@ -80,10 +48,12 @@ class Exec(tl_gui_wx.MainFrame):
                           float(self.m_comboBox_vper.GetValue()) / 100.,
                           float(self.m_comboBox_tper.GetValue()) / 100.)
 
-        popup('Data in {} sucessfully split: \n{}% as validation data, \n{}% as test data.'.format(
-            os.path.abspath(self.m_dirPicker_in.GetPath()),
-            self.m_comboBox_vper.GetValue(),
-            self.m_comboBox_tper.GetValue()))
+        wx.MessageBox(caption='Process complete',
+                      message='Data in {} sucessfully split: \n{}% as validation data, \n{}% as test data.'.format(
+                          os.path.abspath(self.m_dirPicker_in.GetPath()),
+                          self.m_comboBox_vper.GetValue(),
+                          self.m_comboBox_tper.GetValue()),
+                      style=wx.OK | wx.ICON_INFORMATION)
 
     def create_bneck(self, event):
         print(self.m_dirPicker_trFolder.GetPath())
@@ -96,16 +66,18 @@ class Exec(tl_gui_wx.MainFrame):
 
         # call bottleneck creation function from tl:
         print("Initiating feature extraction...")
-        this_f = tl.save_bottleneck_features(self.m_dirPicker_trFolder.GetPath(),
-                                             self.m_dirPicker_valFolder.GetPath(),
-                                             self.m_textCtrl_bName.GetValue(),
-                                             options_dict[arch][0],
-                                             options_dict[arch][1],
-                                             arch)
+        tl.save_bottleneck_features(self.m_dirPicker_trFolder.GetPath(),
+                                    self.m_dirPicker_valFolder.GetPath(),
+                                    self.m_textCtrl_bName.GetValue(),
+                                    options_dict[arch][0],
+                                    options_dict[arch][1],
+                                    arch)
         print("Process complete.")
-        popup(
-            'Bottlenecks for data in {} and {} successfully created. \nFiles saved in {}.'.format(
-                self.m_dirPicker_trFolder.GetPath(), self.m_dirPicker_valFolder.GetPath(), bottleneck_dir))
+
+        wx.MessageBox(caption='Bottlenecks created complete',
+                      message='Bottlenecks for data in {} and {} successfully created. \nFiles saved in {}.'.format(
+                          self.m_dirPicker_trFolder.GetPath(), self.m_dirPicker_valFolder.GetPath(), bottleneck_dir),
+                      style=wx.OK | wx.ICON_INFORMATION)
 
     def run_transfer_learning(self, event):
         print(self.m_textCtrl_bName.GetValue())
@@ -118,20 +90,20 @@ class Exec(tl_gui_wx.MainFrame):
 
         # call bottleneck creation function from tl:
         print("Initiating training...")
-        this_fig = tl.train_top_model(self.m_textCtrl_bName.GetValue(),
-                                      self.m_textCtrl_mName.GetValue(),
-                                      arch,
-                                      options_dict[arch][0],
-                                      options_dict[arch][1],
-                                      int(self.m_comboBox_nEpochs.GetValue()),
-                                      self.m_choice_Opt.GetString(self.m_choice_Opt.GetCurrentSelection()))
+        tl.train_top_model(self.m_textCtrl_bName.GetValue(),
+                           self.m_textCtrl_mName.GetValue(),
+                           arch,
+                           options_dict[arch][0],
+                           options_dict[arch][1],
+                           int(self.m_comboBox_nEpochs.GetValue()),
+                           self.m_choice_Opt.GetString(self.m_choice_Opt.GetCurrentSelection()))
         print("Training complete.")
 
-        # popup('Transfer learning complete. \nModel saved in {} as {} '.format(model_dir,
-        #                                                                      self.m_textCtrl_mName.GetValue()))
-        print('here')
-
-        popimg(this_fig)
+        wx.MessageBox(caption='Training complete',
+                      message='Transfer learning complete. \n'
+                              'Model saved in {} as {} '.format(model_dir,
+                                                                self.m_textCtrl_mName.GetValue()),
+                      style=wx.OK | wx.ICON_INFORMATION)
 
     def label_one(self, event):  # (model, image)
         print(self.m_filePicker_model.GetPath())
@@ -150,9 +122,9 @@ class Exec(tl_gui_wx.MainFrame):
         for i in range(len(model_labels)):
             print('{:50} {:.4f}'.format(model_labels[i], res[0][i]))
 
-        popimg(tl.make_fig(res,
-                           model_labels,
-                           self.m_filePicker_image.GetPath()))
+        tl.make_fig(res,
+                    model_labels,
+                    self.m_filePicker_image.GetPath())
 
     def label_folder(self, event):  # (model, folder)
         print(self.m_filePicker_model.GetPath())
@@ -165,5 +137,3 @@ if __name__ == '__main__':
     frame.Show(True)
     # start the applications
     app.MainLoop()
-
-
