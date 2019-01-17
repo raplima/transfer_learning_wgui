@@ -24,8 +24,8 @@ from keras.preprocessing import image
 from keras.preprocessing.image import ImageDataGenerator
 from matplotlib import pyplot as plt
 from matplotlib import style
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-from matplotlib.figure import Figure
+#from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
+#from matplotlib.figure import Figure
 
 matplotlib.use('TkAgg')
 style.use("seaborn")
@@ -82,7 +82,7 @@ def make_fig(res, model_labels, im):
     for y, lab in enumerate(model_labels):
         ax[1].text(0, y, lab.replace('_', ' '), verticalalignment='center', fontsize=18)
 
-    return fig
+    plt.show(fig)
 
 """
 "Processing" functions:
