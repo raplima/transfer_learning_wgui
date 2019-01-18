@@ -5,6 +5,7 @@
 import wx
 import os
 import pickle
+import pandas as pd
 
 # import the GUI and main processing program
 import tl_gui_wx
@@ -129,6 +130,31 @@ class Exec(tl_gui_wx.MainFrame):
     def label_folder(self, event):  # (model, folder)
         print(self.m_filePicker_model.GetPath())
         print(self.m_dirPicker_fTest.GetPath())
+
+        # save strings to facilitate readability:
+        folder_im = self.m_dirPicker_fTest.GetPath()
+        new_model = self.m_filePicker_model.GetPath()
+        # associated label dictionary:
+        new_model_labels = new_model.split('.')[0] + '_dict_l'
+        with open(new_model_labels, 'rb') as fi:
+            model_labels = pickle.load(fi)
+
+        # call function in tl_processing:
+        res = tl.label_folder(folder_im, new_model)
+
+        # save results as dataframe
+        df = pd.DataFrame(res[0], columns=model_labels)
+        df['file'] = res[1]
+
+        # save results to disk
+        df.to_csv(folder_im + os.sep + os.path.basename(folder_im) + new_model.split('.')[0] + '.csv')
+
+        wx.MessageBox(caption='Folder classified',
+                      message='Results for images in folder \n'
+                              '{} saved in \n {}.csv'.format(folder_im,
+                                                             folder_im + os.sep + os.path.basename(folder_im) +
+                                                             new_model.split('.')[0]),
+                      style=wx.OK | wx.ICON_INFORMATION)
 
 
 if __name__ == '__main__':
