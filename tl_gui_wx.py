@@ -14,11 +14,6 @@ import wx
 import wx.xrc
 import os
 
-from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
-from matplotlib.backends.backend_wx import NavigationToolbar2Wx
-from matplotlib.figure import Figure
-
-
 # path variables:
 path_input = os.getcwd()
 
@@ -81,7 +76,7 @@ class MainFrame(wx.Frame):
 
         m_comboBox_vper = [u"1", u"5", u"10", u"20", u"30"]
         self.m_comboBox_vper = wx.ComboBox(self.m_panel1, wx.ID_ANY, u"10", wx.DefaultPosition, wx.DefaultSize,
-                                       m_comboBox_vper, 0)
+                                           m_comboBox_vper, 0)
         self.m_comboBox_vper.SetToolTip(u"The percentage of data to be reserved as validation data.")
         gbSizer.Add(self.m_comboBox_vper, wx.GBPosition(1, 1), wx.GBSpan(1, 1), wx.ALL | wx.ALIGN_CENTER_HORIZONTAL, 5)
 
@@ -93,7 +88,7 @@ class MainFrame(wx.Frame):
 
         m_comboBox_tper = [u"0", u"1", u"5", u"10", u"20", u"30", u"40", u"50", u"60", u"70", u"80", u"90", u"95"]
         self.m_comboBox_tper = wx.ComboBox(self.m_panel1, wx.ID_ANY, u"10", wx.DefaultPosition, wx.DefaultSize,
-                                        m_comboBox_tper, 0)
+                                           m_comboBox_tper, 0)
         self.m_comboBox_tper.SetToolTip(u"The percentage of data to be reserved as test data.")
         self.m_comboBox_tper.SetSelection(3)
         gbSizer.Add(self.m_comboBox_tper, wx.GBPosition(2, 1), wx.GBSpan(1, 1), wx.ALL | wx.ALIGN_CENTER_HORIZONTAL, 5)
@@ -368,7 +363,7 @@ class MainFrame(wx.Frame):
         pass
 
     # functions
-    def split_data(self, event): # (folder,val,test)
+    def split_data(self, event):  # (folder,val,test)
         event.Skip()
 
     def create_bneck(self, event):  # (train_f,val_f,cnn_basel)
@@ -382,6 +377,7 @@ class MainFrame(wx.Frame):
 
     def label_folder(self, event):  # (model, folder)
         event.Skip()
+
 
 if __name__ == '__main__':
     app = wx.App()
@@ -398,13 +394,10 @@ if __name__ == '__main__':
     print('Dialog (message) window done')
 
     # Creates just a figure and only one subplot
-
     from matplotlib import pyplot as plt
-
     fig, ax = plt.subplots()
-    ax.plot([1,2,3,4,5], [1,2,3,4,5])
+    ax.plot([1, 2, 3, 4, 5], [1, 2, 3, 4, 5])
     ax.set_title('Simple test image')
     plt.show()
 
     print('Figure window done')
-
