@@ -321,15 +321,17 @@ def train_top_model(bottleneck_name, model_name, arch, img_height, img_width, ep
 
     top_model = Sequential()
     top_model.add(Flatten(input_shape=train_data.shape[1:]))
-    #top_model.add(Dense(512, activation='relu'))
-    #top_model.add(Dropout(0.5))
-    #top_model.add(Dense(1024, activation='relu'))
     top_model.add(Dropout(0.5)) # dropout helps with overfitting
-    top_model.add(Dense(len(np.unique(validation_labels)), activation='softmax'))
+    top_model.add(Dense(len(np.unique(train_labels)), activation='softmax'))
 
-    top_model.compile(optimizer=SGD(lr=0.0001, momentum=0.9),
-                  loss='sparse_categorical_crossentropy',
-                  metrics=['accuracy'])
+    if opt == 'RMSProp':
+        top_model.compile(optimizer='rmsprop',
+                      loss='sparse_categorical_crossentropy',
+                      metrics=['accuracy'])
+    if opt == 'Stochastic gradient descent':
+        top_model.compile(optimizer=SGD(lr=0.0001, momentum=0.9),
+                      loss='sparse_categorical_crossentropy',
+                      metrics=['accuracy'])
 
     callbacks = [EarlyStopping(monitor='val_acc', patience=10, verbose=1),
                  ModelCheckpoint(filepath=model_dir+'tempbm.h5', monitor='val_acc', save_best_only=True),
