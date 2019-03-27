@@ -395,6 +395,7 @@ if __name__ == '__main__':
 
     # Creates just a figure and only one subplot
     from matplotlib import pyplot as plt
+
     fig, ax = plt.subplots()
     ax.plot([1, 2, 3, 4, 5], [1, 2, 3, 4, 5])
     ax.set_title('Simple test image')
