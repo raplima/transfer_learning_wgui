@@ -147,7 +147,8 @@ class Exec(tl_gui_wx.MainFrame):
         df['file'] = res[1]
 
         # save results to disk
-        df.to_csv(folder_im + os.sep + os.path.basename(folder_im) + new_model.split('.')[0] + '.csv')
+        _, tail = os.path.split(new_model)
+        df.to_csv(folder_im + os.sep + tail.split('.')[0] + '.csv')
 
         wx.MessageBox(caption='Folder classified',
                       message='Results for images in folder \n'
