@@ -329,13 +329,13 @@ def train_top_model(bottleneck_name, model_name, arch, img_height, img_width, ep
                       loss='sparse_categorical_crossentropy',
                       metrics=['accuracy'])
     if opt == 'Stochastic gradient descent':
-        top_model.compile(optimizer=SGD(lr=0.0001, momentum=0.9),
+        top_model.compile(optimizer=SGD(lr=0.0001, momentum=0.9, clipnorm=1),
                       loss='sparse_categorical_crossentropy',
                       metrics=['accuracy'])
 
-    callbacks = [EarlyStopping(monitor='val_acc', patience=10, verbose=1),
+    callbacks = [EarlyStopping(monitor='val_loss', patience=10, verbose=1),
                  ModelCheckpoint(filepath=model_dir+'tempbm.h5', monitor='val_acc', save_best_only=True),
-                 ReduceLROnPlateau(monitor='val_acc', factor=0.2, patience=5, min_lr=0.00001, verbose=1)]
+                 ReduceLROnPlateau(monitor='val_loss', factor=0.2, patience=5, min_lr=0.00001, verbose=1)]
 
     history = top_model.fit(train_data, train_labels,
               epochs=epochs,
