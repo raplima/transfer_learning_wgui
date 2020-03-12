@@ -6,6 +6,8 @@ There is the possibility to modify the top model and the optimizers using the in
 Some comparisons using remote sensing data and transfer learning here https://www.mdpi.com/2072-4292/12/1/86/htm might be useful. 
 
 ----
+----
+
 Quick summary
 helper_functions.py: some data and model manipulation functions;
 plotting_functions.py: plotting functions (loss decay, confusion matrix);
@@ -13,4 +15,4 @@ model_fit.py: fitting functions;
 model_evaluate.py: evaluate trained model 
 main.py: uses the scripts above, serve as example and also as better control for tests
 user_interface: the user interface, calls functions in scripts above through interface. 
-----
+
