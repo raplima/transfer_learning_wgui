@@ -6,7 +6,6 @@ There is the possibility to modify the top model and the optimizers using the in
 Some comparisons using remote sensing data and transfer learning here https://www.mdpi.com/2072-4292/12/1/86/htm might be useful. 
 
 ----
-----
 
 ### Quick summary
 * helper_functions.py: some data and model manipulation functions;
